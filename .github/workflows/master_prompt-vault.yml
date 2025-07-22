@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - master
+    paths: ['backend/**']
   workflow_dispatch:
 
 jobs:
@@ -24,8 +25,17 @@ jobs:
           java-version: '17'
           distribution: 'microsoft'
 
+      - name: Generate secrets.properties
+        run: |
+          cd Backend/src/main/resources
+          pwd
+          echo "ISSUER=${{ secrets.ISSUER }}" > secrets.properties
+          echo "AUDIENCE=${{ secrets.AUDIENCE }}" >> secrets.properties
+
       - name: Build with Maven
-        run: mvn clean install
+        run: |
+            cd backend
+            mvn clean install
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
