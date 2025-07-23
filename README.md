@@ -17,12 +17,17 @@ A modern full-stack application for storing, versioning and sharing prompts for 
 
 ### Prompt Versioning
 
-- Eveery edit to a prompt is saved as a new versions
+- Every edit to a prompt is saved as a new versions
 - Restore or compare historical prompt versions
 
 ### Public Prompt Sharing
 
 - Discover and reuse others' prompt ideas
+
+### LLM
+
+- Try saved prompts with available LLMS
+- Check other's prompts in LLMS
 
 ## Tech Stack
 
@@ -33,6 +38,7 @@ A modern full-stack application for storing, versioning and sharing prompts for 
 | Frontend | React, Vite, Chakra UI                |
 | Database | PostgreSQL                            |
 | Tools    | Docker, Postman                       |
+| LLM      | Openrouter                            |
 
 ## Getting Started
 

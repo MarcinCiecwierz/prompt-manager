@@ -5,33 +5,47 @@ export const useToast = () => {
   const showToast = ({
     title,
     description,
-    status = "info",
+    type = "info",
     duration = 5000,
     isClosable = true,
   }) => {
-    return toaster.create({
+    const id = toaster.create({
       title,
       description,
-      status,
+      type,
       duration,
       isClosable,
     });
+    return id;
   };
 
   const showSuccess = (title, description) => {
-    return showToast({ title, description, status: "success" });
+    return showToast({ title, description, type: "success" });
   };
 
   const showError = (title, description) => {
-    return showToast({ title, description, status: "error" });
+    return showToast({ title, description, type: "error" });
   };
 
   const showWarning = (title, description) => {
-    return showToast({ title, description, status: "warning" });
+    return showToast({ title, description, type: "warning" });
   };
 
   const showInfo = (title, description) => {
-    return showToast({ title, description, status: "info" });
+    return showToast({ title, description, type: "info" });
+  };
+
+  const showLoading = (description) => {
+    return showToast({
+      description,
+      type: "loading",
+      duration: null,
+      isClosable: false,
+    });
+  };
+
+  const closeToast = (id) => {
+    return toaster.dismiss(id);
   };
 
   return {
@@ -40,7 +54,7 @@ export const useToast = () => {
     error: showError,
     warning: showWarning,
     info: showInfo,
-    close: toaster.close,
-    closeAll: toaster.closeAll,
+    loading: showLoading,
+    close: closeToast,
   };
 };

@@ -4,13 +4,13 @@ import axios from "axios";
 
 export const AuthSync = () => {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const hasSynced = useRef(false); // <- żeby wywołać tylko raz
+  const hasSynced = useRef(false);
 
   useEffect(() => {
     const apiUrl = import.meta.env.VITE_API_URL;
     const syncUser = async () => {
       if (isAuthenticated && !hasSynced.current) {
-        hasSynced.current = true; // zapobiega wielokrotnemu wywołaniu
+        hasSynced.current = true;
         try {
           const token = await getAccessTokenSilently();
           await axios.get(`${apiUrl}/auth/me`, {
@@ -18,7 +18,6 @@ export const AuthSync = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-          console.log("✅ Użytkownik zsynchronizowany z backendem");
         } catch (err) {
           console.error("❌ Błąd synchronizacji z backendem:", err);
         }

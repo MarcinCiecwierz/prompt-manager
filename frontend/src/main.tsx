@@ -11,20 +11,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AddPrompt from "./AddPrompt.tsx";
 import { Toaster } from "@/components/ui/toaster";
 import Profile from "./Profile.tsx";
-import { useApiClient } from "./api/hooks/useApiClient.tsx";
 import { AuthSync } from "./api/AuthSync.tsx";
 
 const queryClient = new QueryClient();
-
-const onRedirectCallback = async (appState) => {
-  try {
-    const apiClient = useApiClient(); // your API client creation function
-    await apiClient.get("/auth/me");
-    console.log("User synced with backend after login");
-  } catch (error) {
-    console.log("Backend sync failed:", error);
-  }
-};
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -37,7 +26,6 @@ createRoot(document.getElementById("root")!).render(
             redirect_uri: window.location.origin + "/home",
             audience: "https://test-api",
           }}
-          // onRedirectCallback={onRedirectCallback}
         >
           <QueryClientProvider client={queryClient}>
             <AuthSync />

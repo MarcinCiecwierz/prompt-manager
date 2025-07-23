@@ -2,12 +2,13 @@ import { useAuth0 } from "@auth0/auth0-react";
 import {
   Avatar,
   AvatarGroup,
-  Box,
+  Button,
   Flex,
   Heading,
   Menu,
   Portal,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { SkeletonCircle } from "@chakra-ui/react";
@@ -23,33 +24,25 @@ const Header = () => {
   return (
     <Flex gap="4" justify={"space-between"} padding={4}>
       <Heading>LOGO TEXT</Heading>
-      <Box>
-        <Menu.Root>
-          <Menu.Trigger>PROMPTS</Menu.Trigger>
-          <Portal>
-            <Menu.Positioner>
-              <Menu.Content>
-                <Menu.Item
-                  value="add prompt"
-                  onClick={() => navigate("/prompt/add")}
-                >
-                  <FiPlusCircle />
-                  Add prompt
-                </Menu.Item>
-                <Menu.Item value="home" onClick={() => navigate("/home")}>
-                  <FiList />
-                  All prompts
-                </Menu.Item>
-              </Menu.Content>
-            </Menu.Positioner>
-          </Portal>
-        </Menu.Root>
-      </Box>
+      <Flex gap={4}>
+        <Flex onClick={() => navigate("/prompt/add")} alignItems="center">
+          <Button variant="ghost">
+            <FiPlusCircle />
+            Add prompt
+          </Button>
+        </Flex>
+        <Flex onClick={() => navigate("/home")} alignItems="center">
+          <Button variant="ghost">
+            <FiList />
+            All prompts
+          </Button>
+        </Flex>
+      </Flex>
       <Stack>
         <SkeletonCircle loading={isLoading}>
           <Menu.Root>
             <Menu.Trigger>
-              <Stack gap={"2"} direction="row" align="flex-start">
+              <Flex gap={"2"} direction="row" alignItems={"center"}>
                 {user?.name}
                 <AvatarGroup>
                   <Avatar.Root size={"sm"}>
@@ -57,7 +50,7 @@ const Header = () => {
                     <Avatar.Image src={user?.picture} />
                   </Avatar.Root>
                 </AvatarGroup>
-              </Stack>
+              </Flex>
             </Menu.Trigger>
             <Portal>
               <Menu.Positioner>

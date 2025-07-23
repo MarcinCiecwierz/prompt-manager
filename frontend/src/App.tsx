@@ -1,23 +1,8 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { Box, Button, Center, Text } from "@chakra-ui/react";
-import { createApiClient } from "./api/client";
-import { useApiClient } from "./api/hooks/useApiClient";
 
 const App = () => {
   const { loginWithRedirect } = useAuth0();
-
-  const loginWithAuthInBackend = () => {
-    loginWithRedirect;
-    const apiClient = useApiClient();
-    apiClient
-      .get("/auth/me")
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
 
   return (
     <Box>

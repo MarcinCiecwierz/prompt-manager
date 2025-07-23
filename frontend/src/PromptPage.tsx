@@ -12,6 +12,10 @@ import {
   VStack,
   Editable,
   IconButton,
+  RadioCard,
+  Icon,
+  HStack,
+  Textarea,
 } from "@chakra-ui/react";
 import Header from "./components/ui/Header";
 import { useApiMutation, useApiQuery } from "./api/hooks/useApi";
@@ -20,20 +24,60 @@ import { MdDelete } from "react-icons/md";
 import { useToast } from "./components/ui/toasterNew";
 import { PiEmpty } from "react-icons/pi";
 import { LuCheck, LuPencilLine, LuX } from "react-icons/lu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import DeepseekIcon from "./components/ui/icons/DeepSeekIcon";
+import ChatGPTIcon from "./components/ui/icons/ChatGPTIcon";
+import { SiClaude } from "react-icons/si";
+import { Tooltip } from "./components/ui/tooltip";
+import Markdown from "react-markdown";
 
 const PromptPage = () => {
   const [searchParams] = useSearchParams();
   const promptId = searchParams.get("promptId");
   const navigate = useNavigate();
   const toast = useToast();
-  const [isPublic, setIsPublic] = useState();
+  const [isPublic, setIsPublic] = useState<boolean>();
+  const [selectedRadio, setSelectedRadio] = useState<string>("Deepseek");
+  const [LLMContent, setLLMContent] = useState<string>(
+    "Here will appear content from chosen LLM"
+  );
+  let loadingToastId = null;
+
+  const items = [
+    {
+      value: "Deepseek",
+      title: "Deepseek",
+      icon: <DeepseekIcon />,
+      disable: false,
+      tooltip: "Try",
+    },
+    {
+      value: "Chat-GPT",
+      title: "Chat-GPT",
+      icon: <ChatGPTIcon />,
+      disable: true,
+      tooltip: "Comeback soon!",
+    },
+    {
+      value: "Claude",
+      title: "Claude",
+      icon: <SiClaude />,
+      disable: true,
+      tooltip: "Comeback soon!",
+    },
+  ];
 
   const {
     data: prompt,
     isLoading,
     error,
   } = useApiQuery(["prompt", promptId], `/prompt?promptId=${promptId}`);
+
+  useEffect(() => {
+    if (prompt) {
+      setIsPublic(prompt.public);
+    }
+  }, [prompt]);
 
   const deletePromptMutation = useApiMutation(
     (id) => `/prompt?promptId=${id}`,
@@ -64,7 +108,7 @@ const PromptPage = () => {
     (data) => `/prompt?promptId=${data.promptId}`,
     "PUT",
     {
-      invalidateQueries: ["prompts", "public-prompts"],
+      invalidateQueries: ["prompts", "public-prompts", ["prompt", promptId]],
       onSuccess: () => {
         toast.success(
           "Prompt updated!",
@@ -85,6 +129,37 @@ const PromptPage = () => {
       ...updateData,
     });
   };
+
+  const postLLMMutation = useApiMutation(
+    (data) => `/llm?promptId=${data.promptId}`,
+    "POST",
+    {
+      invalidateQueries: ["LLM"],
+      onSuccess: (responseData) => {
+        if (loadingToastId) {
+          toast.close(loadingToastId);
+          loadingToastId = null;
+        }
+        toast.success("LLM!", "Your prompt has been successfully sent to LLM.");
+        setLLMContent(responseData);
+      },
+      onPending: () => {
+        loadingToastId = toast.loading("Your prompt is being sent to LLM.");
+      },
+      onError: (error) => {
+        if (loadingToastId) {
+          toast.close(loadingToastId);
+          loadingToastId = null;
+        }
+        toast.error("Error occurred", error.message);
+      },
+    }
+  );
+
+  const handlePostLLM = (promptId) => {
+    postLLMMutation.mutate(promptId);
+  };
+
   if (isLoading) return <div>LOADING</div>;
 
   return (
@@ -108,6 +183,7 @@ const PromptPage = () => {
       >
         <Heading size="xl" color="orange.800" mb={4} fontWeight="bold">
           <Editable.Root
+            submitMode="none"
             defaultValue={prompt.title || "Missing title"}
             onValueCommit={(newValue) => {
               const title = newValue.value;
@@ -138,6 +214,7 @@ const PromptPage = () => {
 
         <Text color="gray.700" lineHeight="1.7" mb={6} fontSize="md">
           <Editable.Root
+            submitMode="none"
             defaultValue={prompt.content || "Missing content"}
             onValueCommit={(newValue) => {
               const content = newValue.value;
@@ -145,7 +222,7 @@ const PromptPage = () => {
             }}
           >
             <Editable.Preview />
-            <Editable.Input />
+            <Editable.Textarea rows={4} />
             <Editable.Control>
               <Editable.EditTrigger asChild>
                 <IconButton variant="ghost" size="xs">
@@ -228,6 +305,69 @@ const PromptPage = () => {
           </Popover.Root>
         </Flex>
       </Box>
+
+      <Center mt={8}>Try your prompt in LLM!</Center>
+
+      <Flex justify={"center"} mt={8} mb={4}>
+        <RadioCard.Root
+          orientation="horizontal"
+          align="center"
+          justify="center"
+          maxW="lg"
+          defaultValue="Deepseek"
+          value={selectedRadio}
+          onValueChange={(details) => {
+            setSelectedRadio(details.value);
+          }}
+        >
+          <HStack align="stretch">
+            {items.map((item) => (
+              <Tooltip content={item.tooltip}>
+                <RadioCard.Item
+                  key={item.value}
+                  value={item.value}
+                  disabled={item.disable}
+                >
+                  <RadioCard.ItemHiddenInput />
+                  <RadioCard.ItemControl>
+                    <Icon fontSize="2xl" color="fg.subtle">
+                      {item.icon}
+                    </Icon>
+                    <RadioCard.ItemText ms="-4">
+                      {item.title}
+                    </RadioCard.ItemText>
+                  </RadioCard.ItemControl>
+                </RadioCard.Item>
+              </Tooltip>
+            ))}
+          </HStack>
+        </RadioCard.Root>
+
+        <Button
+          background={"orange"}
+          onClick={() => {
+            handlePostLLM({ promptId });
+          }}
+          mt={4}
+          ml={6}
+        >
+          Send
+        </Button>
+      </Flex>
+
+      <Flex
+        justify={"center"}
+        p={6}
+        borderRadius="xl"
+        border="1px solid"
+        borderColor="orange.200"
+        maxW="2xl"
+        mx="auto"
+      >
+        <Box width="100%">
+          <Markdown>{LLMContent}</Markdown>
+        </Box>
+      </Flex>
 
       {/* previous versions */}
       <Center pb={5} pt={5}>

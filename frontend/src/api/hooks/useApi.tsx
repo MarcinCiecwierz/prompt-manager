@@ -20,6 +20,7 @@ export const useApiMutation = (endpoint, method = "POST", options = {}) => {
 
   return useMutation({
     mutationFn: async (data) => {
+      options.onPending?.();
       // Handle dynamic URLs
       const url = typeof endpoint === "function" ? endpoint(data) : endpoint;
       const response = await apiClient[method.toLowerCase()](url, data);

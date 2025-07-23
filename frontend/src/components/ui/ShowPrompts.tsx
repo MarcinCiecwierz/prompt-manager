@@ -89,7 +89,12 @@ const ShowPrompts = ({ prompts, isLoading }) => {
                 transition="all 0.2s"
                 onClick={() => navigate(`/prompt?promptId=${prompt.promptId}`)}
               >
-                title: {prompt.title}
+                <Flex direction="column" justify={"space-between"} gap={10}>
+                  <Text textStyle={"sm"}>{prompt.title}</Text>
+                  <Text lineClamp="2" textStyle={"sm"}>
+                    {prompt.content}
+                  </Text>
+                </Flex>
               </Box>
             ))}
           </SimpleGrid>
