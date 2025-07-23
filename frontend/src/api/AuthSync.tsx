@@ -7,12 +7,13 @@ export const AuthSync = () => {
   const hasSynced = useRef(false); // <- żeby wywołać tylko raz
 
   useEffect(() => {
+    const apiUrl = import.meta.env.VITE_API_URL;
     const syncUser = async () => {
       if (isAuthenticated && !hasSynced.current) {
         hasSynced.current = true; // zapobiega wielokrotnemu wywołaniu
         try {
           const token = await getAccessTokenSilently();
-          await axios.get("http://localhost:8080/api/auth/me", {
+          await axios.get(`${apiUrl}/auth/me`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
