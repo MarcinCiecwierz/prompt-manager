@@ -25,7 +25,7 @@ import { useToast } from "./components/ui/toasterNew";
 import { PiEmpty } from "react-icons/pi";
 import { LuCheck, LuPencilLine, LuX } from "react-icons/lu";
 import { useEffect, useState } from "react";
-import DeepseekIcon from "./components/ui/icons/DeepSeekIcon";
+import DeepseekIcon from "./components/ui/icons/DeepseekIcon";
 import ChatGPTIcon from "./components/ui/icons/ChatGPTIcon";
 import { SiClaude } from "react-icons/si";
 import { Tooltip } from "./components/ui/tooltip";

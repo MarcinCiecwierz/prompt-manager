@@ -32,6 +32,7 @@ jobs:
           echo "ISSUER=${{ secrets.ISSUER }}" > secrets.properties
           echo "AUDIENCE=${{ secrets.AUDIENCE }}" >> secrets.properties
           echo "DB_CONNECT=${{ secrets.DB_CONNECT }}" >> secrets.properties
+          echo "OPENROUTER_API=${{ secrets.OPENROUTER_API }}" >> secrets.properties
 
       - name: Build with Maven
         run: |

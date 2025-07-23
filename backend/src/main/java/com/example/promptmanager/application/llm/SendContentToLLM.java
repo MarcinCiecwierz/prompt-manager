@@ -32,6 +32,7 @@ public class SendContentToLLM {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
+
         headers.setBearerAuth(OPENROUTER_API);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
