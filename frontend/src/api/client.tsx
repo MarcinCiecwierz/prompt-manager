@@ -1,8 +1,9 @@
 import axios from "axios";
 
 export const createApiClient = (getAccessToken) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const apiClient = axios.create({
-    baseURL: "http://localhost:8080/api",
+    baseURL: apiUrl,
     timeout: 10000,
   });
 
