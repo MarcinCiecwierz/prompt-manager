@@ -18,7 +18,7 @@ import { useApiQuery } from "./api/hooks/useApi";
 import Header from "./components/ui/Header";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { useMemo, useState, useEffect } from "react";
-import ShowPrompts from "./components/ui/showPrompts";
+import ShowPrompts from "./components/ui/ShowPrompts";
 
 const Home = () => {
   const navigate = useNavigate();
