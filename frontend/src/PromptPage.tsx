@@ -30,6 +30,7 @@ import ChatGPTIcon from "./components/ui/icons/ChatGPTIcon";
 import { SiClaude } from "react-icons/si";
 import { Tooltip } from "./components/ui/tooltip";
 import Markdown from "react-markdown";
+import axios from "axios";
 
 const PromptPage = () => {
   const [searchParams] = useSearchParams();
@@ -136,28 +137,37 @@ const PromptPage = () => {
     {
       invalidateQueries: ["LLM"],
       onSuccess: (responseData) => {
-        if (loadingToastId) {
-          toast.close(loadingToastId);
-          loadingToastId = null;
-        }
-        toast.success("LLM!", "Your prompt has been successfully sent to LLM.");
         setLLMContent(responseData);
-      },
-      onPending: () => {
-        loadingToastId = toast.loading("Your prompt is being sent to LLM.");
-      },
-      onError: (error) => {
-        if (loadingToastId) {
-          toast.close(loadingToastId);
-          loadingToastId = null;
-        }
-        toast.error("Error occurred", error.message);
       },
     }
   );
 
-  const handlePostLLM = (promptId) => {
-    postLLMMutation.mutate(promptId);
+  const handlePostLLM = (data) => {
+    const mutationPromise = new Promise((resolve, reject) => {
+      postLLMMutation.mutate(data, {
+        onSuccess: (responseData) => {
+          resolve(responseData);
+        },
+        onError: (error) => {
+          reject(error);
+        },
+      });
+    });
+
+    toast.promise(mutationPromise, {
+      success: {
+        title: "LLM Success!",
+        description: "Your prompt has been successfully sent to LLM.",
+      },
+      error: {
+        title: "Error occurred",
+        description: "Failed to send prompt to LLM.",
+      },
+      loading: {
+        title: "Processing...",
+        description: "Your prompt is being processed by LLM.",
+      },
+    });
   };
 
   if (isLoading) return <div>LOADING</div>;

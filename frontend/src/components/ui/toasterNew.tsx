@@ -48,6 +48,10 @@ export const useToast = () => {
     return toaster.dismiss(id);
   };
 
+  const promise = (promiseFunction, options) => {
+    return toaster.promise(promiseFunction, options);
+  };
+
   return {
     toast: showToast,
     success: showSuccess,
@@ -56,5 +60,6 @@ export const useToast = () => {
     info: showInfo,
     loading: showLoading,
     close: closeToast,
+    promise: promise,
   };
 };

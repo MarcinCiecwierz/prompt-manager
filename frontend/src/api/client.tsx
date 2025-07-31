@@ -4,7 +4,7 @@ export const createApiClient = (getAccessToken) => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const apiClient = axios.create({
     baseURL: apiUrl,
-    timeout: 60 * 1000,
+    timeout: 120 * 1000,
   });
 
   // Request interceptor to add token
