@@ -31,13 +31,13 @@ A modern full-stack application for storing, versioning and sharing prompts for 
 
 ## Tech Stack
 
-| Laher    | Tech                                  |
+| Layer    | Tech                                  |
 | -------- | ------------------------------------- |
 | Backend  | Java 17, Spring Boot, Spring Security |
 | Auth     | Auth0 (OAuth2 + JWT)                  |
 | Frontend | React, Vite, Chakra UI                |
 | Database | PostgreSQL                            |
-| Tools    | Docker, Postman                       |
+| Tools    | Docker, Kubernetes, Postman           |
 | LLM      | Openrouter                            |
 
 ## Getting Started
@@ -60,3 +60,17 @@ npm run dev
 ```
 
 App runs at http://localhost:5173
+
+### Kubernetes
+
+To run application in kubernetes environment:
+
+- Uncomment dockerfile in frontend
+- Build, tag and push to your chosen container registry
+- Add the container registry credentials to `backend.yml` and `frontend.yml` manifests to allow image pulling.
+- Update the `API_URL` (uncomment) env variable in `env.production` to point to the backend serbice endpoint.
+- Deploy the application by applying the minifests, for example:
+
+```bash
+kubectl apply -f backend.yml -f frontend.yml
+```
